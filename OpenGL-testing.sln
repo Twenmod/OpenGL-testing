@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGL-testing", "OpenGL-testing\OpenGL-testing.vcxproj", "{6C0F454B-8D79-41BF-B25B-57D8706600FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Wireframe|x64 = Debug Wireframe|x64
+		Debug Wireframe|x86 = Debug Wireframe|x86
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C0F454B-8D79-41BF-B25B-57D8706600FA}.Debug Wireframe|x64.ActiveCfg = Debug Wireframe|x64
+		{6C0F454B-8D79-41BF-B25B-57D8706600FA}.Debug Wireframe|x64.Build.0 = Debug Wireframe|x64
+		{6C0F454B-8D79-41BF-B25B-57D8706600FA}.Debug Wireframe|x86.ActiveCfg = Debug Wireframe|Win32
+		{6C0F454B-8D79-41BF-B25B-57D8706600FA}.Debug Wireframe|x86.Build.0 = Debug Wireframe|Win32
+		{6C0F454B-8D79-41BF-B25B-57D8706600FA}.Debug|x64.ActiveCfg = Debug|x64
+		{6C0F454B-8D79-41BF-B25B-57D8706600FA}.Debug|x64.Build.0 = Debug|x64
+		{6C0F454B-8D79-41BF-B25B-57D8706600FA}.Debug|x86.ActiveCfg = Debug|Win32
+		{6C0F454B-8D79-41BF-B25B-57D8706600FA}.Debug|x86.Build.0 = Debug|Win32
+		{6C0F454B-8D79-41BF-B25B-57D8706600FA}.Release|x64.ActiveCfg = Release|x64
+		{6C0F454B-8D79-41BF-B25B-57D8706600FA}.Release|x64.Build.0 = Release|x64
+		{6C0F454B-8D79-41BF-B25B-57D8706600FA}.Release|x86.ActiveCfg = Release|Win32
+		{6C0F454B-8D79-41BF-B25B-57D8706600FA}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DFD6C509-CD2A-4E3D-A260-77111312E423}
+	EndGlobalSection
+EndGlobal
