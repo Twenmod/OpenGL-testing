@@ -202,6 +202,30 @@ void Model::loadModel(Primitives primitiveModel, TextureObject diffuse, TextureO
 }
 
 
+void Model::LoadCubeMap(TextureObject cubemap)
+{
+	Texture cubemapText;
+	cubemapText.id = cubemap.ID;
+	cubemapText.type = "texture_cubemap";
+	for (Mesh& mesh : meshes)
+	{
+		//Remove old cubemap
+		int i = 0;
+		for (Texture text : mesh.textures)
+		{
+			if (text.type == "texture_cubemap")
+			{
+				mesh.textures.erase(mesh.textures.begin()+i);
+			}
+			i++;
+		}
+
+		//Add new one
+		mesh.textures.push_back(cubemapText);
+	}
+}
+
+
 void Model::processNode(aiNode* node, const aiScene* scene)
 {
 	// process all the node's meshes (if any)

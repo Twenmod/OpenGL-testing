@@ -65,13 +65,20 @@ void Mesh::Draw(Shader& shader)
 		// retrieve texture number (the N in diffuse_textureN)
 		std::string number;
 		std::string name = textures[i].type;
-		if (name == "texture_diffuse")
-			number = std::to_string(diffuseNr++);
-		else if (name == "texture_specular")
-			number = std::to_string(specularNr++);
+		if (name == "texture_cubemap") {
+			shader.setInt("cubemap", i);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, textures[i].id);
+		}
+		else
+		{
+			if (name == "texture_diffuse")
+				number = std::to_string(diffuseNr++);
+			else if (name == "texture_specular")
+				number = std::to_string(specularNr++);
 
-		shader.setInt(("material." + name + number).c_str(), i);
-		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+			shader.setInt(("material." + name + number).c_str(), i);
+			glBindTexture(GL_TEXTURE_2D, textures[i].id);
+		}
 	}
 	if (textures.size() > 0)
 		glActiveTexture(GL_TEXTURE0);

@@ -20,7 +20,10 @@ private:
 	bool lockedMouse;
 	Camera mainCamera;
 	Shader baseShader;
+	Shader skyboxShader;
 	Model cube;
+	Model skyboxModel;
+	TextureObject skyBoxTexture;
 	GLFWwindow* window;
 	mainSettings* settings;
 };

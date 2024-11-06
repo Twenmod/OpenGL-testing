@@ -130,12 +130,6 @@
     <None Include="shaders\baseVertShader.glsl">
       <Filter>Source Files\Shaders</Filter>
     </None>
-    <None Include="shaders\colorFragShader.glsl">
-      <Filter>Source Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\colorVertShader.glsl">
-      <Filter>Source Files\Shaders</Filter>
-    </None>
     <None Include="shaders\lightFragShader.glsl">
       <Filter>Source Files\Shaders</Filter>
     </None>
@@ -147,6 +141,12 @@
     </None>
     <None Include="shaders\kuwaharaFrag.glsl">
       <Filter>Source Files\Shaders\PostProcessing</Filter>
+    </None>
+    <None Include="shaders\skyboxFrag.glsl">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="shaders\skyboxVert.glsl">
+      <Filter>Source Files\Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

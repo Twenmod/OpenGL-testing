@@ -8,6 +8,7 @@ in vec3 FragPosViewSpace;
 
 uniform vec3 viewPos;
 uniform vec3 fogColor;
+float FogFar = 500.0; 
 
 struct Material {
     sampler2D diffuse;
@@ -57,8 +58,8 @@ struct SpotLight {
 };  
 uniform SpotLight spotLight;
 
-
-float FogFar = 500.0; 
+uniform samplerCube cubemap;
+float reflectAmount = 0.2f;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);  
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);  
@@ -84,16 +85,19 @@ void main()
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
-    // phase 1: Directional lighting
+    // Directional lighting
     vec4 result = vec4(CalcDirLight(dirLight, norm, viewDir),0);
 
-
-
-    // phase 2: Point lights
+    // Point lights
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
         result += vec4(CalcPointLight(pointLights[i], norm, FragPos, viewDir),0);    
-    // phase 3: Spot light
+    // Spot light
     result += vec4(CalcSpotLight(spotLight, norm, FragPos, viewDir),0);    
+	
+	//Skybox reflect
+    vec3 reflec = reflect(-viewDir, normalize(Normal));
+    result += vec4(texture(cubemap, reflec).rgb, 1) * reflectAmount;
+
 
 	if (hasEmision) {
 		vec3 emission = vec3(texColor);

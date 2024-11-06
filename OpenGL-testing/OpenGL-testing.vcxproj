@@ -228,14 +228,14 @@
     <ClInclude Include="Texture.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\colorFragShader.glsl" />
-    <None Include="shaders\colorVertShader.glsl" />
     <None Include="shaders\lightFragShader.glsl" />
     <None Include="shaders\lightVertShader.glsl" />
     <None Include="shaders\baseFragShader.glsl" />
     <None Include="shaders\baseVertShader.glsl" />
     <None Include="shaders\kuwaharaFrag.glsl" />
     <None Include="shaders\kuwaharaVert.glsl" />
+    <None Include="shaders\skyboxFrag.glsl" />
+    <None Include="shaders\skyboxVert.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

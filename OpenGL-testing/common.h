@@ -1,7 +1,7 @@
 #pragma once
 struct mainSettings
 {
-	bool postProcessingEnabled = true;
+	bool postProcessingEnabled = false;
 };
 
 constexpr uint16_t SCREEN_WIDTH = 1920;

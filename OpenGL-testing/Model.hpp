@@ -13,7 +13,7 @@ public:
 	{
 		loadModel(path);
 	}
-	Model(Primitives model, TextureObject diffuse, TextureObject specular, TextureObject emission = TextureObject())
+	Model(Primitives model, TextureObject diffuse, TextureObject specular = TextureObject(), TextureObject emission = TextureObject())
 	{
 		loadModel(model, diffuse, specular, emission);
 	}
@@ -22,6 +22,7 @@ public:
 		loadModel(model);
 	}
 	Model() {}
+	void LoadCubeMap(TextureObject cubemap);
 	void Draw(Shader& shader);
 private:
 	// model data

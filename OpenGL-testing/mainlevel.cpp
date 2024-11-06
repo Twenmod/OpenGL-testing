@@ -4,15 +4,36 @@ mainLevel::mainLevel() : Level()
 {
 	deltaTime = 0;
 	baseShader = Shader("shaders/baseVertShader.glsl", "shaders/baseFragShader.glsl");
+	skyboxShader = Shader("shaders/skyboxVert.glsl", "shaders/skyboxFrag.glsl");
 	cube = Model(Primitives::PRIMITIVE_CUBE, TextureObject("assets/diffuse.jpg"), TextureObject("assets/specular.jpg"));
+
+
+	lockedMouse = true;
+
+	std::vector<std::string> faces
+	{
+		"assets/skybox/right.jpg",
+		"assets/skybox/left.jpg",
+		"assets/skybox/top.jpg",
+		"assets/skybox/bottom.jpg",
+		"assets/skybox/front.jpg",
+		"assets/skybox/back.jpg"
+	};
+	skyBoxTexture = TextureObject(faces, false);
+
 }
 
 void mainLevel::Init(GLFWwindow* _window, mainSettings* _mainSettings)
 {
 	settings = _mainSettings;
 	window = _window;
-	lockedMouse = true;
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+
+	skyboxModel = Model(Primitives::PRIMITIVE_CUBE, skyBoxTexture);
+	
+	cube.LoadCubeMap(skyBoxTexture);
+
 }
 
 void mainLevel::Tick(float _deltaTime)
@@ -60,12 +81,13 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	baseShader.setMat4("view", view);
 	baseShader.setVec3("viewPos", mainCamera.Position);
 
+	baseShader.setInt("skybox", skyBoxTexture.ID);
 
 	// Lights
-	baseShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+	baseShader.setVec3("dirLight.direction", 0.4f, -1.0f, 0.3f);
 	baseShader.setVec3("dirLight.ambient", 0.1f, 0.1f, 0.1f);
-	baseShader.setVec3("dirLight.diffuse", 0.6f, 0.6f, 0.6f);
-	baseShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+	baseShader.setVec3("dirLight.diffuse", 0.7f, 0.7f, 0.7f);
+	baseShader.setVec3("dirLight.specular", 0.6f, 0.6f, 0.6f);
 
 	baseShader.setVec3("fogColor", glm::vec3(0.1f, 0.1f, 0.1f));
 
@@ -79,10 +101,21 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	// settings
 	baseShader.setFloat("material.shininess", 32.0f);
 
+	//Skybox
+	glCullFace(GL_FRONT);
+	//glDepthMask(GL_FALSE);
+
+	skyboxShader.use();
+	skyboxShader.setMat4("projection", projection);
+	glm::mat4 skyView = glm::mat4(glm::mat3(mainCamera.GetViewMatrix())); // Removes translation part of the matrix
+	skyboxShader.setMat4("view", skyView);
+	skyboxModel.Draw(skyboxShader);
 
 	//Models/objects
+	//glDepthMask(GL_TRUE);
+	glCullFace(GL_BACK);
+	baseShader.use();
 
-	glEnable(GL_CULL_FACE);
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::scale(model, glm::vec3(8.0f, 0.5f, 8.0f));
 	model = glm::translate(model, glm::vec3(0.0f, -1.5f, 0.0f));
@@ -96,9 +129,9 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	cube.Draw(baseShader);
 
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 	model = glm::translate(model, glm::vec3(-2.0f, 1.0f, 3.0f));
 	model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(1, 1, 1));
+	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 	baseShader.setMat4("model", model);
 	cube.Draw(baseShader);
 }
