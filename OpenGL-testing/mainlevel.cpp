@@ -1,10 +1,14 @@
 #include "mainlevel.hpp"
 
+
 mainLevel::mainLevel() : Level()
 {
 	deltaTime = 0;
 	baseShader = Shader("shaders/baseVertShader.glsl", "shaders/baseFragShader.glsl");
 	skyboxShader = Shader("shaders/skyboxVert.glsl", "shaders/skyboxFrag.glsl");
+	particleShader = Shader("shaders/particleVert.glsl", "shaders/particleFrag.glsl");
+
+
 	cube = Model(Primitives::PRIMITIVE_CUBE, TextureObject("assets/diffuse.jpg"), TextureObject("assets/specular.jpg"));
 
 
@@ -20,7 +24,6 @@ mainLevel::mainLevel() : Level()
 		"assets/skybox/back.jpg"
 	};
 	skyBoxTexture = TextureObject(faces, false);
-
 }
 
 void mainLevel::Init(GLFWwindow* _window, mainSettings* _mainSettings)
@@ -29,16 +32,18 @@ void mainLevel::Init(GLFWwindow* _window, mainSettings* _mainSettings)
 	window = _window;
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-
 	skyboxModel = Model(Primitives::PRIMITIVE_CUBE, skyBoxTexture);
 	
 	cube.LoadCubeMap(skyBoxTexture);
 
+	ComputeShader computeShader = ComputeShader("shaders/testcompute.glsl");
+	particleSystem.Init(computeShader);
 }
 
 void mainLevel::Tick(float _deltaTime)
 {
 	deltaTime = _deltaTime;
+	particleSystem.Tick(deltaTime);
 }
 
 void mainLevel::Shutdown()
@@ -54,7 +59,15 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 
 	//Gui
 	ImGui::Begin("Performance counter", NULL, ImGuiWindowFlags_MenuBar);
-	ImGui::Text("FPS: %.f", ImGui::GetIO().Framerate);
+	ImGui::Text("FPS: %.f (%.2f ms)", ImGui::GetIO().Framerate, ImGui::GetIO().DeltaTime*1000);
+	framerates.push_back(1/ImGui::GetIO().DeltaTime);
+	if (framerates.size() > 5000)
+		framerates.erase(framerates.begin());
+	float tot = 0;
+	for (float f : framerates)
+		tot += f;
+	float avarage = tot / framerates.size();
+	ImGui::Text("Avarage: %.f (%.2f ms)", avarage, (1 / avarage)*1000);
 	ImGui::Checkbox("PostProcessing", &settings->postProcessingEnabled);
 	ImGui::Checkbox("Wireframe", &wireframe);
 
@@ -81,6 +94,13 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	baseShader.setMat4("view", view);
 	baseShader.setVec3("viewPos", mainCamera.Position);
 
+	//particles
+	particleShader.use();
+	particleShader.setMat4("projection", projection);
+	particleShader.setMat4("view", view);
+	particleShader.setVec3("viewpos", mainCamera.Position);
+
+	baseShader.use();
 	baseShader.setInt("skybox", skyBoxTexture.ID);
 
 	// Lights
@@ -114,6 +134,9 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	//Models/objects
 	//glDepthMask(GL_TRUE);
 	glCullFace(GL_BACK);
+
+	particleSystem.Draw(cube, particleShader);
+
 	baseShader.use();
 
 	glm::mat4 model = glm::mat4(1.0f);
@@ -134,6 +157,10 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 	baseShader.setMat4("model", model);
 	cube.Draw(baseShader);
+
+
+
+
 }
 
 void mainLevel::processInput()

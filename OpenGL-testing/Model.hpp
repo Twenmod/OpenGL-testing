@@ -1,4 +1,9 @@
 #pragma once
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include "Texture.hpp"
+#include "Mesh.hpp"
 
 enum class Primitives
 {
@@ -24,6 +29,8 @@ public:
 	Model() {}
 	void LoadCubeMap(TextureObject cubemap);
 	void Draw(Shader& shader);
+	void DrawInstanced(Shader& shader, unsigned int instances);
+	void SetupInstanceData(unsigned int dataBuffer, unsigned int location, unsigned int size = 3, void* offset = (void*)0);
 private:
 	// model data
 	std::vector<Mesh> meshes;

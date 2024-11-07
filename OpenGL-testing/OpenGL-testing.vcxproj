@@ -192,6 +192,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="computeshader.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="imGui\imgui.cpp" />
     <ClCompile Include="imGui\imgui_demo.cpp" />
@@ -204,6 +205,7 @@
     <ClCompile Include="mainlevel.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="particlesystem.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -211,6 +213,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="computeshader.hpp" />
     <ClInclude Include="imGui\imconfig.h" />
     <ClInclude Include="imGui\imgui.h" />
     <ClInclude Include="imGui\imgui_impl_glfw.h" />
@@ -223,6 +226,7 @@
     <ClInclude Include="mainlevel.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Model.hpp" />
+    <ClInclude Include="particlesystem.hpp" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.hpp" />
@@ -234,8 +238,11 @@
     <None Include="shaders\baseVertShader.glsl" />
     <None Include="shaders\kuwaharaFrag.glsl" />
     <None Include="shaders\kuwaharaVert.glsl" />
+    <None Include="shaders\particleFrag.glsl" />
+    <None Include="shaders\particleVert.glsl" />
     <None Include="shaders\skyboxFrag.glsl" />
     <None Include="shaders\skyboxVert.glsl" />
+    <None Include="shaders\testcompute.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

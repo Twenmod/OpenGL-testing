@@ -1,5 +1,7 @@
 #pragma once
 #include "level.hpp"
+#include "computeshader.hpp"
+#include "particlesystem.hpp"
 
 class mainLevel : public Level
 {
@@ -20,10 +22,14 @@ private:
 	bool lockedMouse;
 	Camera mainCamera;
 	Shader baseShader;
+	Shader particleShader;
 	Shader skyboxShader;
 	Model cube;
 	Model skyboxModel;
 	TextureObject skyBoxTexture;
 	GLFWwindow* window;
 	mainSettings* settings;
+	ParticleSystem particleSystem;
+	std::vector<float> framerates;
+
 };

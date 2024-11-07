@@ -55,6 +55,8 @@ int main()
 
 	float lastFrame = 0.0f; // Time of last frame
 
+	bool firstFrame = true;
+
 	Model screenQuad(Primitives::PRIMITIVE_PLANE);
 
 	while (!glfwWindowShouldClose(window))
@@ -62,8 +64,14 @@ int main()
 		glfwPollEvents();
 
 		float currentFrame = (float)glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
+		deltaTime = std::min(currentFrame - lastFrame,1.f);
 		lastFrame = currentFrame;
+
+		if (firstFrame)
+		{
+			firstFrame = false;
+			deltaTime = 0;
+		}
 
 		//Input
 		processInput(window);
@@ -125,7 +133,7 @@ void init()
 
 #pragma region initialize GLFW
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // FOR MAC

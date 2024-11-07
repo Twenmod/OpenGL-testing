@@ -24,6 +24,9 @@
     <Filter Include="Source Files\Shaders\PostProcessing">
       <UniqueIdentifier>{cf8ff38d-369f-4e7b-a723-8915041d87e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Shaders\Compute">
+      <UniqueIdentifier>{91879aa0-25b7-459a-b737-6c5a5bda93f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -70,6 +73,12 @@
     </ClCompile>
     <ClCompile Include="mainlevel.cpp">
       <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="computeshader.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="particlesystem.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +131,12 @@
       <Filter>Source Files\Game</Filter>
     </ClInclude>
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="computeshader.hpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="particlesystem.hpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\baseFragShader.glsl">
@@ -147,6 +162,15 @@
     </None>
     <None Include="shaders\skyboxVert.glsl">
       <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="shaders\particleFrag.glsl">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="shaders\particleVert.glsl">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="shaders\testcompute.glsl">
+      <Filter>Source Files\Shaders\Compute</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -54,6 +54,21 @@ void Mesh::setupMesh()
 	glBindVertexArray(0);
 }
 
+void Mesh::SetupInstanceData(unsigned int dataBuffer, unsigned int location, unsigned int size, void* offset)
+{
+	glBindVertexArray(VAO);
+
+	glEnableVertexAttribArray(location);
+	glBindBuffer(GL_ARRAY_BUFFER, dataBuffer);
+	glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE, size * sizeof(float), (void*)offset);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glVertexAttribDivisor(location, 1);
+
+	glBindVertexArray(0);
+
+}
+
+
 
 void Mesh::Draw(Shader& shader)
 {
@@ -92,6 +107,48 @@ void Mesh::Draw(Shader& shader)
 	else
 	{
 		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)vertices.size());
+	}
+	glBindVertexArray(0);
+}
+
+void Mesh::DrawInstanced(Shader& shader, unsigned int instances)
+{
+	unsigned int diffuseNr = 1;
+	unsigned int specularNr = 1;
+	for (unsigned int i = 0; i < textures.size(); i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
+		// retrieve texture number (the N in diffuse_textureN)
+		std::string number;
+		std::string name = textures[i].type;
+		if (name == "texture_cubemap")
+		{
+			shader.setInt("cubemap", i);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, textures[i].id);
+		}
+		else
+		{
+			if (name == "texture_diffuse")
+				number = std::to_string(diffuseNr++);
+			else if (name == "texture_specular")
+				number = std::to_string(specularNr++);
+
+			shader.setInt(("material." + name + number).c_str(), i);
+			glBindTexture(GL_TEXTURE_2D, textures[i].id);
+		}
+	}
+	if (textures.size() > 0)
+		glActiveTexture(GL_TEXTURE0);
+
+	// draw mesh
+	glBindVertexArray(VAO);
+	if (indices.size() > 0)
+	{
+		glDrawElementsInstanced(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0, instances);
+	}
+	else
+	{
+		glDrawArraysInstanced(GL_TRIANGLES, 0, (GLsizei)vertices.size(), instances);
 	}
 	glBindVertexArray(0);
 }

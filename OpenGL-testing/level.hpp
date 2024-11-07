@@ -19,8 +19,6 @@
 
 #include "stb_image.h"
 
-#include "Texture.hpp"
-#include "Mesh.hpp"
 #include "Model.hpp"
 
 #include "imGui/imgui.h"

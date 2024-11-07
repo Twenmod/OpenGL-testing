@@ -8,13 +8,9 @@
 #include <vector>
 
 #include "Shader.h"
-#include "Mesh.hpp"
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
-#include "Texture.hpp"
+
 
 #include "Model.hpp"
 
@@ -28,6 +24,17 @@ void Model::Draw(Shader& shader)
 		meshes[i].Draw(shader);
 }
 
+void Model::DrawInstanced(Shader& shader, unsigned int instances)
+{
+	for (unsigned int i = 0; i < meshes.size(); i++)
+		meshes[i].DrawInstanced(shader, instances);
+}
+
+void Model::SetupInstanceData(unsigned int dataBuffer, unsigned int location, unsigned int size, void* offset)
+{
+	for (unsigned int i = 0; i < meshes.size(); i++)
+		meshes[i].SetupInstanceData(dataBuffer, location, size, offset);
+}
 
 void Model::loadModel(std::string path)
 {
