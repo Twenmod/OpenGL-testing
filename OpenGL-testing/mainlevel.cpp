@@ -2,16 +2,16 @@
 
 
 mainLevel::mainLevel() : Level(),
-particleSystem(0.1,5,glm::vec3(0,5,0))
+particleSystem(0.0001,0.5,glm::vec3(0,15,0))
 {
 	deltaTime = 0;
 	baseShader = Shader("shaders/baseVertShader.glsl", "shaders/baseFragShader.glsl");
 	skyboxShader = Shader("shaders/skyboxVert.glsl", "shaders/skyboxFrag.glsl");
-	particleShader = Shader("shaders/particleVert.glsl", "shaders/particleFrag.glsl");
+	particleShader = Shader("shaders/particleLitVert.glsl", "shaders/particleLitFrag.glsl");
 
 
 	cube = Model(Primitives::PRIMITIVE_CUBE, TextureObject("assets/diffuse.jpg"), TextureObject("assets/specular.jpg"));
-
+	sphere = Model("assets/sphere.obj");
 
 	lockedMouse = true;
 
@@ -99,7 +99,13 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	particleShader.use();
 	particleShader.setMat4("projection", projection);
 	particleShader.setMat4("view", view);
-	particleShader.setVec3("viewpos", mainCamera.Position);
+	particleShader.setVec3("viewPos", mainCamera.Position);
+	particleShader.setVec3("fogColor", glm::vec3(0.1f, 0.1f, 0.1f));
+
+	particleShader.setVec3("dirLight.direction", 0.4f, -1.0f, 0.3f);
+	particleShader.setVec3("dirLight.ambient", 0.1f, 0.1f, 0.1f);
+	particleShader.setVec3("dirLight.diffuse", 0.7f, 0.7f, 0.7f);
+	particleShader.setVec3("dirLight.specular", 0.6f, 0.6f, 0.6f);
 
 	baseShader.use();
 	baseShader.setInt("skybox", skyBoxTexture.ID);
@@ -136,7 +142,7 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	//glDepthMask(GL_TRUE);
 	glCullFace(GL_BACK);
 
-	particleSystem.Draw(cube, particleShader);
+	particleSystem.Draw(sphere, particleShader);
 
 	baseShader.use();
 
@@ -147,8 +153,6 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	baseShader.setMat4("model", model);
 	cube.Draw(baseShader);
 
-
-	/*
 	model = glm::mat4(1.0f);
 	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 	model = glm::translate(model, glm::vec3(2.0f, 0.0f, 3.0f));
@@ -161,9 +165,6 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 	baseShader.setMat4("model", model);
 	cube.Draw(baseShader);
-
-	*/
-
 
 }
 

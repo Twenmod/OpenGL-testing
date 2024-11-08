@@ -26,6 +26,7 @@ private:
 	Shader skyboxShader;
 	Model cube;
 	Model skyboxModel;
+	Model sphere;
 	TextureObject skyBoxTexture;
 	GLFWwindow* window;
 	mainSettings* settings;

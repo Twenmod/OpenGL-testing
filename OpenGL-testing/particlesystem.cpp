@@ -51,7 +51,7 @@ void ParticleSystem::Init(ComputeShader particleShader)
 		particles[i].position = m_position;
 		particles[i].velocity = glm::vec3(rand() / (float)RAND_MAX * 10 - 5, 0, rand() / (float)RAND_MAX * 10 - 5);
 		particles[i].color = glm::vec4(1, 0, 0, 1);
-		particles[i].endColor = glm::vec4(1, 0, 0, 1);
+		particles[i].endColor = glm::vec4(0, 1, 0, 1);
 		particles[i].lifeTime = m_particleLifeTime;
 		particles[i].life = m_particleLifeTime;
 		particles[i].size = 1;

@@ -172,5 +172,11 @@
     <None Include="shaders\testcompute.glsl">
       <Filter>Source Files\Shaders\Compute</Filter>
     </None>
+    <None Include="shaders\particleLitFrag.glsl">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="shaders\particleLitVert.glsl">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

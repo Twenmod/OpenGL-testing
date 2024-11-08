@@ -81,9 +81,9 @@ void main() {
 			state = pcg_hash(id);
 			particles[id].position = startPosition;
 			particles[id].life = 0;
-			particles[id].velocity.x = rand()*spawnVelocity-spawnVelocity/2;
-			particles[id].velocity.y = rand()*spawnVelocity-spawnVelocity/2;
-			particles[id].velocity.z = rand()*spawnVelocity-spawnVelocity/2;
+			vec3 velocity = vec3(rand()-0.5,rand()-0.5,rand()-0.5);
+			velocity = normalize(velocity);
+			particles[id].velocity = velocity * spawnVelocity;
 
 		}
 	}

@@ -72,7 +72,7 @@ void main() {
 
   fragColor = texture(screenTexture, texCoord);
 
-  int size = int(2);
+  int size = int(5);
   if (size <= 0) { return; }
 
   // Lower Left
