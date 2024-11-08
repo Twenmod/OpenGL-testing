@@ -4,9 +4,11 @@ out vec4 FragColor;
 in vec3 FragPos;
 in vec3 Normal;  
 in vec2 TexCoords;
+in vec4 Color;
 
 
 void main()
 {
-	FragColor = vec4((FragPos+1)/2,1);
+	if (Color.a == 0) discard;
+	FragColor = Color;
 }
