@@ -33,7 +33,7 @@ public:
 	virtual void Init(GLFWwindow* window, mainSettings* settings) = 0;
 	virtual void Shutdown() {};
 	virtual void Tick(float deltaTime) = 0;
-	virtual void Draw(unsigned int screenWidth, unsigned int screenHeigth) = 0;
+	virtual void Draw(unsigned int screenWidth, unsigned int screenHeigth, unsigned int frameBuffer) = 0;
 	virtual void processInput() {};
 	virtual void onKeyDown(int key, int scancode, int action, int mods) {};
 	virtual void processMouse(double xpos, double ypos, float deltaX, float deltaY) {};

@@ -178,5 +178,11 @@
     <None Include="shaders\particleLitVert.glsl">
       <Filter>Source Files\Shaders</Filter>
     </None>
+    <None Include="shaders\depthFrag.glsl">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="shaders\depthVert.glsl">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

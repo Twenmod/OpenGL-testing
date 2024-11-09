@@ -20,7 +20,7 @@ public:
 	}
 	Model(Primitives model, TextureObject diffuse, TextureObject specular = TextureObject(), TextureObject emission = TextureObject())
 	{
-		loadModel(model, diffuse, specular, emission);
+		loadModel(model, std::move(diffuse), std::move(specular), std::move(emission));
 	}
 	Model(Primitives model)
 	{

@@ -232,6 +232,8 @@
     <ClInclude Include="Texture.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\depthFrag.glsl" />
+    <None Include="shaders\depthVert.glsl" />
     <None Include="shaders\lightFragShader.glsl" />
     <None Include="shaders\lightVertShader.glsl" />
     <None Include="shaders\baseFragShader.glsl" />

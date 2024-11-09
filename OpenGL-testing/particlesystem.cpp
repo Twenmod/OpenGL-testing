@@ -18,7 +18,7 @@
 ParticleSystem::ParticleSystem() :
 	m_spawnInterval(0.1f),
 	m_particleLifeTime(2.f),
-	m_particleAmount(ceil(m_particleLifeTime / m_spawnInterval)),
+	m_particleAmount((int)ceil(m_particleLifeTime / m_spawnInterval)),
 	m_spawnVelocity(10)
 {
 	m_position = glm::vec3(0, 0, 0);
@@ -30,7 +30,7 @@ ParticleSystem::ParticleSystem() :
 ParticleSystem::ParticleSystem(float spawnInterval, float lifeTime, glm::vec3 position, float maxSpawnVelocity) :
 	m_spawnInterval(spawnInterval),
 	m_particleLifeTime(lifeTime),
-	m_particleAmount(std::max(round(m_particleLifeTime / m_spawnInterval),1.f)),
+	m_particleAmount((unsigned int)std::max(round(m_particleLifeTime / m_spawnInterval),1.f)),
 	m_spawnVelocity(maxSpawnVelocity)
 {
 	m_position = position;
@@ -91,7 +91,7 @@ void ParticleSystem::Tick(float deltaTime)
 	m_particleShader.setFloat("deltaTime", deltaTime);
 	m_particleShader.setVec3("startPosition", m_position);
 	m_particleShader.setUInt("maxParticles", m_particleAmount);
-	m_particleShader.setUInt("particlesPerFrame", ceil(deltaTime/m_spawnInterval));
+	m_particleShader.setUInt("particlesPerFrame", (unsigned int)ceil(deltaTime/m_spawnInterval));
 	m_particleShader.setFloat("spawnVelocity", m_spawnVelocity);
 
 	m_spawnTimer += deltaTime;

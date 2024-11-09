@@ -5,6 +5,8 @@ in vec3 FragPos;
 in vec3 Normal;  
 in vec2 TexCoords;
 in vec3 FragPosViewSpace;
+in vec4 FragPosLightSpace;
+
 
 uniform vec3 viewPos;
 uniform vec3 fogColor;
@@ -62,9 +64,27 @@ uniform SpotLight spotLight;
 uniform samplerCube cubemap;
 float reflectAmount = 0.2f;
 
+uniform sampler2D shadowMap;
+
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);  
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);  
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+
+	projCoords = projCoords * 0.5 + 0.5; 
+
+	float closestDepth = texture(shadowMap, projCoords.xy).r;   
+	float currentDepth = projCoords.z;  
+
+	float bias = max(0.05 * (1.0 - dot(Normal, -dirLight.direction)), 0.005);
+	float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+
+	return shadow;
+}
+
 
 void main()
 {
@@ -91,7 +111,7 @@ void main()
 
     // Point lights
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += vec4(CalcPointLight(pointLights[i], norm, FragPos, viewDir),0);    
+    result += vec4(CalcPointLight(pointLights[i], norm, FragPos, viewDir),0);    
     // Spot light
     result += vec4(CalcSpotLight(spotLight, norm, FragPos, viewDir),0);    
 	
@@ -107,6 +127,9 @@ void main()
 
 	float alpha = texColor.a;
 	result += vec4(0,0,0,alpha);
+
+	float shadow = ShadowCalculation(FragPosLightSpace);       
+	result = vec4(vec3(result)*(1-shadow),result.a);
 
 	result = vec4(mix(vec3(result), fogColor, fogMix),result.a);
 	

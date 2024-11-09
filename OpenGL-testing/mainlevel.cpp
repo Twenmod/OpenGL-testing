@@ -2,13 +2,13 @@
 
 
 mainLevel::mainLevel() : Level(),
-particleSystem(0.0001,0.5,glm::vec3(0,15,0))
+particleSystem(0.00001,5,glm::vec3(0,15,0))
 {
 	deltaTime = 0;
 	baseShader = Shader("shaders/baseVertShader.glsl", "shaders/baseFragShader.glsl");
 	skyboxShader = Shader("shaders/skyboxVert.glsl", "shaders/skyboxFrag.glsl");
 	particleShader = Shader("shaders/particleLitVert.glsl", "shaders/particleLitFrag.glsl");
-
+	depthShader = Shader("shaders/depthVert.glsl", "shaders/depthFrag.glsl");
 
 	cube = Model(Primitives::PRIMITIVE_CUBE, TextureObject("assets/diffuse.jpg"), TextureObject("assets/specular.jpg"));
 	sphere = Model("assets/sphere.obj");
@@ -27,6 +27,10 @@ particleSystem(0.0001,0.5,glm::vec3(0,15,0))
 	skyBoxTexture = TextureObject(faces, false);
 }
 
+const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+unsigned int depthMap;
+unsigned int depthMapFBO;
+
 void mainLevel::Init(GLFWwindow* _window, mainSettings* _mainSettings)
 {
 	settings = _mainSettings;
@@ -39,6 +43,24 @@ void mainLevel::Init(GLFWwindow* _window, mainSettings* _mainSettings)
 
 	ComputeShader computeShader = ComputeShader("shaders/testcompute.glsl");
 	particleSystem.Init(computeShader);
+
+
+	glGenFramebuffers(1, &depthMapFBO);
+
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 }
 
 void mainLevel::Tick(float _deltaTime)
@@ -52,8 +74,55 @@ void mainLevel::Shutdown()
 
 }
 
-void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
+void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth, unsigned int framebuffer)
 {
+
+	// 1. Shadow mapping
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	
+	//Render from light pov
+	float near_plane = 0.01f, far_plane = 50.0f;
+	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+	glm::mat4 lightView = glm::lookAt(glm::vec3(-0.4f, 1.0f, -0.3f)*5.f,
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+
+	depthShader.use();
+	depthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(8.0f, 0.5f, 8.0f));
+	model = glm::translate(model, glm::vec3(0.0f, -1.5f, 0.0f));
+
+	depthShader.setMat4("model", model);
+	cube.Draw(depthShader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+	model = glm::translate(model, glm::vec3(2.0f, 0.0f, 3.0f));
+	depthShader.setMat4("model", model);
+	cube.Draw(depthShader);
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-2.0f, 1.0f, 3.0f));
+	model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(1, 1, 1));
+	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+	depthShader.setMat4("model", model);
+	cube.Draw(depthShader);
+
+
+
+
+
+	// 2. then render scene as normal with shadow mapping (using depth map)
+	glViewport(0, 0, screenWidth, screenHeigth);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
 	//Clear screen
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -94,6 +163,11 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	baseShader.setMat4("projection", projection);
 	baseShader.setMat4("view", view);
 	baseShader.setVec3("viewPos", mainCamera.Position);
+
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	baseShader.setInt("shadowMap", 5);
+	baseShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
 	//particles
 	particleShader.use();
@@ -138,7 +212,7 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	skyboxShader.setMat4("view", skyView);
 	skyboxModel.Draw(skyboxShader);
 
-	//Models/objects
+	//Models/objectsd
 	//glDepthMask(GL_TRUE);
 	glCullFace(GL_BACK);
 
@@ -146,7 +220,7 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 
 	baseShader.use();
 
-	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::mat4(1.0f);
 	model = glm::scale(model, glm::vec3(8.0f, 0.5f, 8.0f));
 	model = glm::translate(model, glm::vec3(0.0f, -1.5f, 0.0f));
 
@@ -163,6 +237,11 @@ void mainLevel::Draw(unsigned int screenWidth, unsigned int screenHeigth)
 	model = glm::translate(model, glm::vec3(-2.0f, 1.0f, 3.0f));
 	model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(1, 1, 1));
 	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+	baseShader.setMat4("model", model);
+	cube.Draw(baseShader);
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-0.4f, 1.0f, -0.3f) * 5.f);
 	baseShader.setMat4("model", model);
 	cube.Draw(baseShader);
 

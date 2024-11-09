@@ -94,7 +94,7 @@ int main()
 		}
 		glEnable(GL_DEPTH_TEST);
 		//Draw level
-		currentLevel->Draw(width,height);
+		currentLevel->Draw(width,height, postProcessingBuffer);
 
 		if (settings.postProcessingEnabled)
 		{

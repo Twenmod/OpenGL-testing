@@ -10,7 +10,7 @@ public:
 	void Init(GLFWwindow* window, mainSettings* mainSettings);
 	void Shutdown();
 	void Tick(float deltaTime);
-	void Draw(unsigned int screenWidth, unsigned int screenHeigth);
+	void Draw(unsigned int screenWidth, unsigned int screenHeigth, unsigned int framebuffer);
 	void processInput();
 	void onKeyDown(int key, int scancode, int action, int mods);
 	void processMouse(double xpos, double ypos, float deltaX, float deltaY);
@@ -24,6 +24,7 @@ private:
 	Shader baseShader;
 	Shader particleShader;
 	Shader skyboxShader;
+	Shader depthShader;
 	Model cube;
 	Model skyboxModel;
 	Model sphere;
